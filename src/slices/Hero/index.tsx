@@ -37,23 +37,7 @@ const Hero: FC<HeroProps> = ({ slice }) => {
         stagger: 0.07,
       }).to(".hero-body", { opacity: 1, duration: 0.6, ease: "power2.out" });
 
-      gsap.fromTo(
-        ".hero-scene",
-        {
-          background:
-            "linear-gradient(to bottom, #000000, #0f172a, #062f4a, #7fa0b9)",
-        },
-        {
-          background:
-            "linear-gradient(to bottom, #ffffff, #ffffff, #ffffff, #ffffff)",
-          scrollTrigger: {
-            trigger: ".hero",
-            start: "top top",
-            end: "50% bottom",
-            scrub: 1,
-          },
-        },
-      );
+    
     });
 
     mm.add("(prefers-reduced-motion: reduce)", () => {
@@ -64,12 +48,12 @@ const Hero: FC<HeroProps> = ({ slice }) => {
     <section
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
-     className="blue-gradient-bg hero text-white h-dvh text-shadow-black/30 text-shadow-lg motion-safe:h-[300vh]"
+     className="blue-gradient-bg hero  text-white h-dvh text-shadow-black/30 text-shadow-lg motion-safe:h-[300vh]"
     > 
-      <div className="sticky  pointer-events-none top-0 h-dvh w-full">
+      <div className="sticky hero-scene pointer-events-none top-0 h-dvh w-full">
 <Scene />
       </div>
-      <div className="hero-content absolute inset-x-0 top-0 h-dvh">
+      <div className="hero-content  absolute inset-x-0 top-0 h-dvh">
     <Bounded fullWidth className="absolute inset-x-0 top-16 md:top-24 md:left-[8vw] ">
 
      <PrismicRichText field={slice.primary.heading} components={{heading1:({children})=>(
@@ -82,10 +66,10 @@ const Hero: FC<HeroProps> = ({ slice }) => {
 
      <PrismicRichText field={slice.primary.body} components={{
        heading2:({children}: {children: React.ReactNode})=>(
-         <h1 className="hero-heading  font-bold-slanted text-4xl lg:text-6xl leading-[0.8] uppercase " >{children}</h1>
+         <h1 className="hero-heading  hero-body font-bold-slanted opacity-0 text-4xl lg:text-6xl leading-[0.8] uppercase " >{children}</h1>
         )}} />
         </div>
-    <button className=" font-bold-slanted   flex w-fit items-center gap-1 rounded bg-[#01A7E1] px-3 py-1 text-2xl uppercase transition disabled:grayscale group cursor-pointer ">
+    <button className=" font-bold-slanted hero-body opacity-0  flex w-fit items-center gap-1 rounded bg-[#01A7E1] px-3 py-1 text-2xl uppercase transition disabled:grayscale group cursor-pointer ">
     {slice.primary.buy_button_text}
     <span className="group-hover:translate-x-1 transition-all">{">"}</span>
       </button> 

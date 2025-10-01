@@ -15,10 +15,21 @@ gsap.registerPlugin(useGSAP,ScrollTrigger);
 
 
 function Setup() {
+    const audio1 = new Audio('/sounds/blue-1.mp3');
+    const audio2 = new Audio('/red-1.mp3')
   const lightRef = useRef<SpotLight | null>(null!);
   const keyboardref = useRef<Group | null>(null!);
   const keyboardAnimationref = useRef<KeyboardRefs|null>(null!)
   const KeyCapref = useRef<Group | null>(null!);
+  const playKeySound = () => {
+    try {
+     if(audio1.paused){
+        audio1.play()
+     }else if(audio2.paused){
+        audio2.play()
+     }
+    } catch {}
+  };
   const [scalefactor, setscalefactor] = useState(
     window.innerWidth > 800 ? 1.0 : 0.8,
   );
@@ -46,6 +57,16 @@ function Setup() {
     const mm = gsap.matchMedia();
     mm.add("(prefers-reduced-motion: no-preference)", () => {
     if (keyboardref.current && lightRef.current && KeyCapref.current) {
+    // Ensure all keyboard meshes receive shadows
+    keyboardref.current.traverse((obj) => {
+      // @ts-ignore
+      if (obj && obj.type === 'Mesh') {
+        // @ts-ignore
+        obj.receiveShadow = true;
+        // @ts-ignore
+        obj.castShadow = obj.castShadow || false;
+      }
+    });
     
      const tl = gsap.timeline();
      if (typeof window !== "undefined") {
@@ -67,11 +88,25 @@ function Setup() {
       x: 1,
       y: 1,
       z: 1,
-      duration: 1.4
+      duration: 1.4,
+      
+    }).set(lightRef.current.position,{
+        x:0,y:0,z:0
     })
-     .to(lightRef.current.position,{
-        z:5.20,
-        duration:1.4
+     .fromTo(lightRef.current.position,{
+        x:0.0,
+        y:-1.0,
+        z:4.0
+     },{
+        x:0.0,
+        y:2.0,
+        z:7.0,
+        duration:1.5,
+        onStart:()=>{
+            if (lightRef.current) {
+              lightRef.current.intensity = 20;
+            }
+        }
      },"<").call(()=>{
         if (typeof window !== "undefined") {
             document.body.style.overflow = "";
@@ -85,6 +120,8 @@ function Setup() {
                 scrub:1
             }
         })
+        // Play a sound once when the scroll-based animation begins
+       
          scroll.to(KeyCapref.current.scale,{
             x: 2.0,
             y: 2.0,
@@ -120,36 +157,38 @@ function Setup() {
               });
            
               const keyboardColumns = [
-                [ "lcontrol"],
-                [ "lshift","lalt"],
-                ["z","caps","lwin"],
-                ["x", "a","tab"],
-                ["c","s","q","grave"],
-                ["v","d","w","one","esc"],
-                ["f1", "b", "f", "e", "two"],
-                ["f2", "n", "g", "r", "three","space"],
-                ["f3", "m", "h", "t", "four"],
-                ["f4", "five", "comma", "j","y", "ralt"],
-                ["f5", "six", "u", "k", "period", "fn"],
+                ["esc", "grave", "tab", "caps", "lshift", "lcontrol"],
+                ["f1", "one", "q", "a", "z", "lalt"],
+                ["f2", "two", "w", "s", "x", "lwin"],
+                ["f3", "three", "e", "d", "c"],
+                ["f4", "four", "r", "f", "v"],
+                ["f5", "five", "t", "g", "b", "space"],
+                ["f6", "six", "y", "h", "n"],
+                ["f7", "seven", "u", "j", "m"],
+                ["f8", "eight", "i", "k", "comma"],
+                ["f9", "nine", "o", "l", "period"],
+                ["f10", "zero", "dash", "p", "semicolon", "slash", "ralt"],
                 [
-                  "f6",
-                  "7",
-                  "i",
-                  "l",
-                  "slash",
-               "seven",
-                  "arrowleft"
+                  "f11",
+                  "lsquarebracket",
+                  "quote",
+                  "rshift",
+                  "fn",
+                  "arrowleft",
+                  "rsquarebracket",
+                  "enter",
+                  "f12",
+                  "equal",
+                  "arrowup",
                 ],
-                ["f7","f8","f9","eight","nine","o","p","semicolon","coma","rshift"],
-                [
-                    "f10","f11","f12","zero","dash","equal","rsquarebracket","lsquarebracket","enter","arrowup","arrowdown"
-                ],
+                [],
                 [
                   "del",
                   "backspace",
                   "backslash",
                   "pagedown",
                   "end",
+                  "arrowdown",
                   "pageup",
                   "arrowright",
                 ],
@@ -160,42 +199,58 @@ function Setup() {
               const sortedSwitches = allSwitches.sort(
                 (a, b) => a.position.x - b.position.x,
               );
+              // Match each keycap to a switch by x/z position (within epsilon)
+              const EPS = 1e-1;
               keyboardColumns.forEach((column,columnsindex)=>{
                 const columnKeycaps: THREE.Mesh[] = [];
                 const columnSwitches: THREE.Object3D[] = [];
                 column.forEach((keyname)=>{
                     if(keyname &&individualKeys[keyname]?.current ){
-                        columnKeycaps.push(individualKeys[keyname].current);                       
+                        const keyMesh = individualKeys[keyname].current;
+                        columnKeycaps.push(keyMesh);
                     }
                 })
                 keyCapsByColumn.push(columnKeycaps);
-                const switchesPerColumn = Math.ceil(
-                    sortedSwitches.length / keyboardColumns.length,
-                  );
-                  const startIndex = columnsindex * switchesPerColumn;
-                  const endIndex = Math.min(
-                    startIndex + switchesPerColumn,
-                    sortedSwitches.length,
-                  );
-    
-                  for (let i = startIndex; i < endIndex; i++) {
-                    if (sortedSwitches[i]) {
-                      columnSwitches.push(sortedSwitches[i]);
-                    }
-                  }
-                  switchesByColumn.push(columnSwitches);
-                
+                   // Assign switches to columns based on their count
+              const switchesPerColumn = Math.ceil(
+                sortedSwitches.length / keyboardColumns.length,
+              );
+              const startIndex = columnsindex * switchesPerColumn;
+              const endIndex = Math.min(
+                startIndex + switchesPerColumn,
+                sortedSwitches.length,
+              );
+
+              for (let i = startIndex; i < endIndex; i++) {
+                if (sortedSwitches[i]) {
+                  columnSwitches.push(sortedSwitches[i]);
+                }
+              }
+                switchesByColumn.push(columnSwitches);
               })
               keyCapsByColumn.forEach((key,index)=>{
                const  wavetime = index / keyCapsByColumn.length;
                 key.forEach((ikey)=>{
                     scroll.to(ikey.position,{
-                        y:"+=0.04",
-                        duration:0.14
-                    },wavetime +0.5)
+                        y:"+=0.05",
+                        duration:0.20,
+                        onStart:()=>{
+                            playKeySound()
+                        }
+                    },wavetime)
                     scroll.to(ikey.position,{
-                        y:"-=0.04",
-                    },wavetime +0.64)
+                        y:"-=0.05",
+                    },wavetime +0.20)
+                })
+                switchesByColumn[index].forEach((ikey)=>{
+                    scroll.to(ikey.position,{
+                        y:"+=0.03",
+                        duration:0.12,
+                      
+                    },wavetime+0.08)
+                    scroll.to(ikey.position,{
+                        y:"-=0.03"
+                    },wavetime +0.20)
                 })
               })
         }
@@ -207,10 +262,10 @@ function Setup() {
     <group scale={scalefactor} position={[0, 0, 0]}>
       <spotLight
         ref={lightRef}
-        position={[-0.02,1.54,-4.0]}
+        position={[0.0,0.0,0.0]}
         castShadow
-        intensity={20}
-        shadow-normalbias={10}
+        intensity={0.0}
+        shadow-normalbias={0.04}
         shadow-bias={0.3}
         shadow-mapSize={0.4}
       />
@@ -234,6 +289,15 @@ function Setup() {
           rotation={[1.19, 0.43, 0.11]}
         >
           <Keycap texture={1} />
+        </Float>
+        <Float
+          floatIntensity={0.8}
+          rotationIntensity={2.0}
+          position={[-0.22, -0.20, 4.0]}
+          rotation={[1.19, 0.43, 0.11]}
+          castShadow
+        >
+          <Keycap texture={1}  />
         </Float>
         <Float
           position={[-1.44, 0.86, 3.97]}
@@ -308,7 +372,7 @@ function Setup() {
 }
 export function Scene() {
   return (
-    <Canvas camera={{ fov: 90 }}>
+    <Canvas camera={{ fov: 90 }} shadows>
       <Setup />
     </Canvas>
   );
