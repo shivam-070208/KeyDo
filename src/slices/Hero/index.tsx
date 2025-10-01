@@ -1,23 +1,70 @@
+"use client"
 import { Children, FC } from "react";
 import { Content } from "@prismicio/client";
 import { PrismicRichText, SliceComponentProps } from "@prismicio/react";
 import { Bounded } from "@/app/components";
 import { Scene } from "./Scene";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger, SplitText } from "gsap/all";
 
 /**
  * Props for `Hero`.
  */
 export type HeroProps = SliceComponentProps<Content.HeroSlice>;
-
+gsap.registerPlugin(useGSAP, SplitText,ScrollTrigger);
 /**
  * Component for "Hero" Slices.
  */
 const Hero: FC<HeroProps> = ({ slice }) => {
+  useGSAP(() => {
+    const mm = gsap.matchMedia();
+
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const split = SplitText.create(".hero-heading", {
+        type: "chars,lines",
+        mask: "lines",
+        linesClass: "line++",
+      });
+
+      const tl = gsap.timeline({ delay: 4.2 });
+
+      tl.from(split.chars, {
+        opacity: 0,
+        y: -120,
+        ease: "back",
+        duration: 0.4,
+        stagger: 0.07,
+      }).to(".hero-body", { opacity: 1, duration: 0.6, ease: "power2.out" });
+
+      gsap.fromTo(
+        ".hero-scene",
+        {
+          background:
+            "linear-gradient(to bottom, #000000, #0f172a, #062f4a, #7fa0b9)",
+        },
+        {
+          background:
+            "linear-gradient(to bottom, #ffffff, #ffffff, #ffffff, #ffffff)",
+          scrollTrigger: {
+            trigger: ".hero",
+            start: "top top",
+            end: "50% bottom",
+            scrub: 1,
+          },
+        },
+      );
+    });
+
+    mm.add("(prefers-reduced-motion: reduce)", () => {
+      gsap.set(".hero-heading, .hero-body", { opacity: 1 });
+    });
+  });
   return (
     <section
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
-     className="blue-gradient-bg text-white h-dvh text-shadow-black/30 text-shadow-lg"
+     className="blue-gradient-bg hero text-white h-dvh text-shadow-black/30 text-shadow-lg motion-safe:h-[300vh]"
     > 
       <div className="sticky  pointer-events-none top-0 h-dvh w-full">
 <Scene />
@@ -26,7 +73,7 @@ const Hero: FC<HeroProps> = ({ slice }) => {
     <Bounded fullWidth className="absolute inset-x-0 top-16 md:top-24 md:left-[8vw] ">
 
      <PrismicRichText field={slice.primary.heading} components={{heading1:({children})=>(
-       <h1 className="hero-heading  font-bold-slanted text-6xl sm:text-7xl  lg:text-8xl leading-[0.8] uppercase " >{children}</h1>
+       <h1 className="hero-heading  font-bold-slanted font-[950]! text-6xl sm:text-7xl  lg:text-8xl leading-[0.8] uppercase " >{children}</h1>
       )}} />
       </Bounded>
       <Bounded fullWidth className="absolute bottom-0 inset-x-0 md:right-[10vw] md:left-auto">
