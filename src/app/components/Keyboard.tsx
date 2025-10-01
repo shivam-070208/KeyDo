@@ -383,7 +383,7 @@ export const Keyboard = forwardRef<KeyboardRefs, KeyboardProps>(
     });
 
     return (
-      <group {...props} dispose={null} ref={containerRef}>
+      <group {...props}  dispose={null} ref={containerRef}>
         <group position={[0.02, 0, 0]}>
           <mesh
             ref={plateRef}

@@ -1,5 +1,5 @@
 "use client"
-import { Children, FC } from "react";
+import {  FC } from "react";
 import { Content } from "@prismicio/client";
 import { PrismicRichText, SliceComponentProps } from "@prismicio/react";
 import { Bounded } from "@/app/components";
@@ -75,6 +75,7 @@ const Hero: FC<HeroProps> = ({ slice }) => {
       </button> 
         </Bounded>
       </div>
+ 
     </section>
   );
 };

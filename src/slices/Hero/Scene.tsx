@@ -2,8 +2,8 @@
 import * as THREE from 'three'
 import { Keyboard, KeyboardRefs, Keycap } from "@/app/components";
 import { useGSAP } from "@gsap/react";
-import { Environment, Float, OrbitControls } from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Environment, Float } from "@react-three/drei";
+import { Canvas } from "@react-three/fiber";
 import gsap from "gsap";
 import { useEffect, useRef, useState } from "react";
 import { SpotLight } from "three";
@@ -15,8 +15,9 @@ gsap.registerPlugin(useGSAP,ScrollTrigger);
 
 
 function Setup() {
+   const [envintensity,setenvintensity] = useState<number>(0)
     const audio1 = new Audio('/sounds/blue-1.mp3');
-    const audio2 = new Audio('/red-1.mp3')
+    const audio2 = new Audio('/sounds//red-1.mp3')
   const lightRef = useRef<SpotLight | null>(null!);
   const keyboardref = useRef<Group | null>(null!);
   const keyboardAnimationref = useRef<KeyboardRefs|null>(null!)
@@ -56,18 +57,7 @@ function Setup() {
   useGSAP(() => {
     const mm = gsap.matchMedia();
     mm.add("(prefers-reduced-motion: no-preference)", () => {
-    if (keyboardref.current && lightRef.current && KeyCapref.current) {
-    // Ensure all keyboard meshes receive shadows
-    keyboardref.current.traverse((obj) => {
-      // @ts-ignore
-      if (obj && obj.type === 'Mesh') {
-        // @ts-ignore
-        obj.receiveShadow = true;
-        // @ts-ignore
-        obj.castShadow = obj.castShadow || false;
-      }
-    });
-    
+    if (keyboardref.current && lightRef.current && KeyCapref.current) {    
      const tl = gsap.timeline();
      if (typeof window !== "undefined") {
         window.scrollTo({top:0})
@@ -104,7 +94,8 @@ function Setup() {
         duration:1.5,
         onStart:()=>{
             if (lightRef.current) {
-              lightRef.current.intensity = 20;
+                setenvintensity(0.2)
+              lightRef.current.intensity = 30;
             }
         }
      },"<").call(()=>{
@@ -265,14 +256,14 @@ function Setup() {
         position={[0.0,0.0,0.0]}
         castShadow
         intensity={0.0}
-        shadow-normalbias={0.04}
-        shadow-bias={0.3}
-        shadow-mapSize={0.4}
+        shadow-bias={-0.0008}
+        shadow-normalBias={0.0009}
+        shadow-mapSize={1024}
       />
       <Environment 
       
         files={["/hdr/studio-small.hdr"]}
-        environmentIntensity={0.009}
+        environmentIntensity={envintensity}
       />
       <group ref={keyboardref}   position={[0,0,0]} >
         <Keyboard
