@@ -146,6 +146,69 @@ export type HomeDocument<Lang extends string = string> =
 export type AllDocumentTypes = HomeDocument;
 
 /**
+ * Item in *Features → Default → Primary → BentoItems*
+ */
+export interface FeaturesSliceDefaultPrimaryBentoitemsItem {
+  /**
+   * Image field in *Features → Default → Primary → BentoItems*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: features.default.primary.bentoitems[].image
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  image: prismic.ImageField<never>;
+
+  /**
+   * Subhead field in *Features → Default → Primary → BentoItems*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: Features Name
+   * - **API ID Path**: features.default.primary.bentoitems[].subhead
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  subhead: prismic.RichTextField;
+
+  /**
+   * size field in *Features → Default → Primary → BentoItems*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: small
+   * - **API ID Path**: features.default.primary.bentoitems[].size
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  size: prismic.SelectField<"small" | "medium" | "large", "filled">;
+}
+
+/**
+ * Primary content in *Features → Default → Primary*
+ */
+export interface FeaturesSliceDefaultPrimary {
+  /**
+   * Heading1 field in *Features → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: Key-Do720 Features
+   * - **API ID Path**: features.default.primary.heading1
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  heading1: prismic.RichTextField;
+
+  /**
+   * BentoItems field in *Features → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: features.default.primary.bentoitems[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  bentoitems: prismic.GroupField<
+    Simplify<FeaturesSliceDefaultPrimaryBentoitemsItem>
+  >;
+}
+
+/**
  * Default variation for Features Slice
  *
  * - **API ID**: `default`
@@ -154,7 +217,7 @@ export type AllDocumentTypes = HomeDocument;
  */
 export type FeaturesSliceDefault = prismic.SharedSliceVariation<
   "default",
-  Record<string, never>,
+  Simplify<FeaturesSliceDefaultPrimary>,
   never
 >;
 
@@ -264,6 +327,8 @@ declare module "@prismicio/client" {
       HomeDocumentDataSlices1Slice,
       AllDocumentTypes,
       FeaturesSlice,
+      FeaturesSliceDefaultPrimaryBentoitemsItem,
+      FeaturesSliceDefaultPrimary,
       FeaturesSliceVariation,
       FeaturesSliceDefault,
       HeroSlice,

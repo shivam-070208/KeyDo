@@ -66,8 +66,12 @@ const Hero: FC<HeroProps> = ({ slice }) => {
 
      <PrismicRichText field={slice.primary.body} components={{
        heading2:({children}: {children: React.ReactNode})=>(
-         <h1 className="hero-heading  hero-body font-bold-slanted opacity-0 text-4xl lg:text-6xl leading-[0.8] uppercase " >{children}</h1>
-        )}} />
+         <h1 className="hero-heading  font-bold-slanted  text-4xl lg:text-6xl leading-[0.8] uppercase " >{children}</h1>
+        ),
+        paragraph:({children}:{children: React.ReactNode})=>(
+          <p className="hero-body opacity-0">{children}</p>
+        )
+        }} />
         </div>
     <button className=" font-bold-slanted hero-body opacity-0  flex w-fit items-center gap-1 rounded bg-[#01A7E1] px-3 py-1 text-2xl uppercase transition disabled:grayscale group cursor-pointer ">
     {slice.primary.buy_button_text}

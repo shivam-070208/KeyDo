@@ -24,6 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
+         cz-shortcut-listen="true"
         className={`${roboto_flex.variable} antialiased`}
       >
         {children}

@@ -10,7 +10,58 @@
       "docURL": "...",
       "version": "initial",
       "description": "Default",
-      "imageUrl": ""
+      "imageUrl": "",
+      "primary": {
+        "heading1": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Heading1",
+            "placeholder": "Key-Do720 Features",
+            "allowTargetBlank": true,
+            "multi": "heading1"
+          }
+        },
+        "bentoitems": {
+          "type": "Group",
+          "config": {
+            "label": "BentoItems",
+            "repeat": true,
+            "fields": {
+              "image": {
+                "type": "Image",
+                "config": {
+                  "label": "Image",
+                  "constraint": {},
+                  "thumbnails": []
+                }
+              },
+              "subhead": {
+                "type": "StructuredText",
+                "config": {
+                  "label": "Subhead",
+                  "placeholder": "Features Name",
+                  "allowTargetBlank": true,
+                  "multi": "heading1,paragraph"
+                }
+              },
+              "size": {
+                "type": "Select",
+                "config": {
+                  "label": "size",
+                  "placeholder": "",
+                  "options": [
+                    "small",
+                    "medium",
+                    "large"
+                  ],
+                  "default_value": "small"
+                }
+              }
+            }
+          }
+        }
+      },
+      "items": {}
     }
   ]
 }
