@@ -69,7 +69,7 @@ type ContentRelationshipFieldWithData<
   >;
 }[Exclude<TCustomType[number], string>["id"]];
 
-type HomeDocumentDataSlicesSlice = FeaturesSlice | HeroSlice;
+type HomeDocumentDataSlicesSlice = ClicksSlice | HeroSlice | FeaturesSlice;
 
 type HomeDocumentDataSlices1Slice = never;
 
@@ -143,7 +143,130 @@ interface HomeDocumentData {
 export type HomeDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithoutUID<Simplify<HomeDocumentData>, "home", Lang>;
 
-export type AllDocumentTypes = HomeDocument;
+type SwitchDocumentDataSlicesSlice = never;
+
+/**
+ * Content for Switch documents
+ */
+interface SwitchDocumentData {
+  /**
+   * Name field in *Switch*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: Name of Switch
+   * - **API ID Path**: switch.name
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  name: prismic.KeyTextField;
+
+  /**
+   * Color field in *Switch*
+   *
+   * - **Field Type**: Color
+   * - **Placeholder**: *None*
+   * - **API ID Path**: switch.color
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/color
+   */
+  color: prismic.ColorField;
+
+  /**
+   * `slices` field in *Switch*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: switch.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<SwitchDocumentDataSlicesSlice>;
+}
+
+/**
+ * Switch document from Prismic
+ *
+ * - **API ID**: `switch`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type SwitchDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<Simplify<SwitchDocumentData>, "switch", Lang>;
+
+export type AllDocumentTypes = HomeDocument | SwitchDocument;
+
+/**
+ * Item in *Clicks → Default → Primary → SwitchItem*
+ */
+export interface ClicksSliceDefaultPrimaryClicksitemsItem {
+  /**
+   * Switch field in *Clicks → Default → Primary → SwitchItem*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: clicks.default.primary.clicksitems[].switch
+   * - **Documentation**: https://prismic.io/docs/fields/content-relationship
+   */
+  switch: ContentRelationshipFieldWithData<
+    [{ id: "switch"; fields: ["name", "color"] }]
+  >;
+}
+
+/**
+ * Primary content in *Clicks → Default → Primary*
+ */
+export interface ClicksSliceDefaultPrimary {
+  /**
+   * Heading field in *Clicks → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: clicks.default.primary.heading
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  heading: prismic.RichTextField;
+
+  /**
+   * SwitchItem field in *Clicks → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: clicks.default.primary.clicksitems[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  clicksitems: prismic.GroupField<
+    Simplify<ClicksSliceDefaultPrimaryClicksitemsItem>
+  >;
+}
+
+/**
+ * Default variation for Clicks Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ClicksSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<ClicksSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *Clicks*
+ */
+type ClicksSliceVariation = ClicksSliceDefault;
+
+/**
+ * Clicks Shared Slice
+ *
+ * - **API ID**: `clicks`
+ * - **Description**: Clicks
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type ClicksSlice = prismic.SharedSlice<"clicks", ClicksSliceVariation>;
 
 /**
  * Item in *Features → Default → Primary → BentoItems*
@@ -325,7 +448,15 @@ declare module "@prismicio/client" {
       HomeDocumentData,
       HomeDocumentDataSlicesSlice,
       HomeDocumentDataSlices1Slice,
+      SwitchDocument,
+      SwitchDocumentData,
+      SwitchDocumentDataSlicesSlice,
       AllDocumentTypes,
+      ClicksSlice,
+      ClicksSliceDefaultPrimaryClicksitemsItem,
+      ClicksSliceDefaultPrimary,
+      ClicksSliceVariation,
+      ClicksSliceDefault,
       FeaturesSlice,
       FeaturesSliceDefaultPrimaryBentoitemsItem,
       FeaturesSliceDefaultPrimary,

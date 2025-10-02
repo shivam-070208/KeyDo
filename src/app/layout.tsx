@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
-import {Roboto_Flex } from "next/font/google";
+import { Roboto_Flex } from "next/font/google";
 import "./globals.css";
 
 const roboto_flex = Roboto_Flex({
   variable: "--font-roboto-flex",
   subsets: ["latin"],
   display: "swap",
-  axes:["wdth","slnt","opsz"],
+  axes: ["wdth", "slnt", "opsz"],
 });
-
-
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -24,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-         cz-shortcut-listen="true"
+        cz-shortcut-listen="true"
         className={`${roboto_flex.variable} antialiased`}
       >
         {children}

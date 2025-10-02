@@ -1,0 +1,54 @@
+{
+  "id": "clicks",
+  "type": "SharedSlice",
+  "name": "Clicks",
+  "description": "Clicks",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "heading": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Heading",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "multi": "paragraph,heading1"
+          }
+        },
+        "clicksitems": {
+          "type": "Group",
+          "config": {
+            "label": "SwitchItem",
+            "repeat": true,
+            "fields": {
+              "switch": {
+                "type": "Link",
+                "config": {
+                  "label": "Switch",
+                  "select": "document",
+                  "repeat": false,
+                  "customtypes": [
+                    {
+                      "id": "switch",
+                      "fields": [
+                        "name",
+                        "color"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

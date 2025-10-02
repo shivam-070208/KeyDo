@@ -11,10 +11,13 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
-            "features": {
+            "clicks": {
               "type": "SharedSlice"
             },
             "hero": {
+              "type": "SharedSlice"
+            },
+            "features": {
               "type": "SharedSlice"
             }
           }
