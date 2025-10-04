@@ -24,7 +24,7 @@ children,
         scrollTrigger: {
           trigger: Cardref.current,
           start: "top bottom",
-          toggleActions: "play pause pause reverse",
+          toggleActions: "play none none reverse",
         },
       });
     });

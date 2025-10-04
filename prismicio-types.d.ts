@@ -69,7 +69,11 @@ type ContentRelationshipFieldWithData<
   >;
 }[Exclude<TCustomType[number], string>["id"]];
 
-type HomeDocumentDataSlicesSlice = ClicksSlice | HeroSlice | FeaturesSlice;
+type HomeDocumentDataSlicesSlice =
+  | CustomKeycapsSlice
+  | ClicksSlice
+  | HeroSlice
+  | FeaturesSlice;
 
 type HomeDocumentDataSlices1Slice = never;
 
@@ -269,6 +273,78 @@ type ClicksSliceVariation = ClicksSliceDefault;
 export type ClicksSlice = prismic.SharedSlice<"clicks", ClicksSliceVariation>;
 
 /**
+ * Item in *CustomKeycaps → Default → Primary → KeyCaps*
+ */
+export interface CustomKeycapsSliceDefaultPrimaryKeycapsItem {
+  /**
+   * Name field in *CustomKeycaps → Default → Primary → KeyCaps*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: Enter KeyCap Name here
+   * - **API ID Path**: custom_keycaps.default.primary.keycaps[].name
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  name: prismic.KeyTextField;
+}
+
+/**
+ * Primary content in *CustomKeycaps → Default → Primary*
+ */
+export interface CustomKeycapsSliceDefaultPrimary {
+  /**
+   * Heading field in *CustomKeycaps → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: Enter Heading and subheading here
+   * - **API ID Path**: custom_keycaps.default.primary.heading
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  heading: prismic.RichTextField;
+
+  /**
+   * KeyCaps field in *CustomKeycaps → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: custom_keycaps.default.primary.keycaps[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  keycaps: prismic.GroupField<
+    Simplify<CustomKeycapsSliceDefaultPrimaryKeycapsItem>
+  >;
+}
+
+/**
+ * Default variation for CustomKeycaps Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type CustomKeycapsSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<CustomKeycapsSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *CustomKeycaps*
+ */
+type CustomKeycapsSliceVariation = CustomKeycapsSliceDefault;
+
+/**
+ * CustomKeycaps Shared Slice
+ *
+ * - **API ID**: `custom_keycaps`
+ * - **Description**: CustomKeycaps
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type CustomKeycapsSlice = prismic.SharedSlice<
+  "custom_keycaps",
+  CustomKeycapsSliceVariation
+>;
+
+/**
  * Item in *Features → Default → Primary → BentoItems*
  */
 export interface FeaturesSliceDefaultPrimaryBentoitemsItem {
@@ -457,6 +533,11 @@ declare module "@prismicio/client" {
       ClicksSliceDefaultPrimary,
       ClicksSliceVariation,
       ClicksSliceDefault,
+      CustomKeycapsSlice,
+      CustomKeycapsSliceDefaultPrimaryKeycapsItem,
+      CustomKeycapsSliceDefaultPrimary,
+      CustomKeycapsSliceVariation,
+      CustomKeycapsSliceDefault,
       FeaturesSlice,
       FeaturesSliceDefaultPrimaryBentoitemsItem,
       FeaturesSliceDefaultPrimary,

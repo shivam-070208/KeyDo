@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 
 export const components = {
+  custom_keycaps: dynamic(() => import("./CustomKeycaps")),
   clicks: dynamic(() => import("./Clicks")),
   features: dynamic(() => import("./Features")),
   hero: dynamic(() => import("./Hero")),

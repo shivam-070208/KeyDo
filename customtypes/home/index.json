@@ -11,6 +11,9 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "custom_keycaps": {
+              "type": "SharedSlice"
+            },
             "clicks": {
               "type": "SharedSlice"
             },

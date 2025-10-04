@@ -1,0 +1,44 @@
+{
+  "id": "custom_keycaps",
+  "type": "SharedSlice",
+  "name": "CustomKeycaps",
+  "description": "CustomKeycaps",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "heading": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Heading",
+            "placeholder": "Enter Heading and subheading here",
+            "allowTargetBlank": true,
+            "multi": "paragraph,heading1,heading2,strong,em"
+          }
+        },
+        "keycaps": {
+          "type": "Group",
+          "config": {
+            "label": "KeyCaps",
+            "repeat": true,
+            "fields": {
+              "name": {
+                "type": "Text",
+                "config": {
+                  "label": "Name",
+                  "placeholder": "Enter KeyCap Name here"
+                }
+              }
+            }
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}
